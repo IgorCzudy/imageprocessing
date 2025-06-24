@@ -495,15 +495,26 @@ def get_combined_bounds(bounds, image_size):
 
 def min_max(pts):
     bounds = Bounds()
-    for p in pts:
-        if p[0] > bounds.max.x:
-            bounds.max.x = p[0]
-        if p[1] > bounds.max.y:
-            bounds.max.y = p[1]
-        if p[0] < bounds.min.x:
-            bounds.min.x = p[0]
-        if p[1] < bounds.min.y:
-            bounds.min.y = p[1]
+    # for p in pts:
+    #     if p[0] > bounds.max.x:
+    #         bounds.max.x = p[0]
+    #     if p[1] > bounds.max.y:
+    #         bounds.max.y = p[1]
+    #     if p[0] < bounds.min.x:
+    #         bounds.min.x = p[0]
+    #     if p[1] < bounds.min.y:
+    #         bounds.min.y = p[1]
+    arr = np.array(pts, dtype=np.float32)
+    
+    # Vectorized min/max calculation
+    min_vals = np.min(arr, axis=0)
+    max_vals = np.max(arr, axis=0)
+    
+    # Create bounds object
+    bounds = Bounds()
+    bounds.min.x, bounds.min.y = min_vals
+    bounds.max.x, bounds.max.y = max_vals
+
     return bounds
 
 

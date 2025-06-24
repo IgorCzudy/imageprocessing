@@ -43,6 +43,7 @@ from skimage.transform import estimate_transform, FundamentalMatrixTransform, Pr
 import micasense.image as image
 import micasense.imageutils as imageutils
 import micasense.plotutils as plotutils
+from concurrent.futures import ThreadPoolExecutor
 
 
 class Capture(object):
@@ -153,7 +154,13 @@ class Capture(object):
         for fle in file_list:
             if not os.path.isfile(fle):
                 raise IOError(f"All files in file list must be a file. The following file is not:\n{fle}")
-        images = [image.Image(fle, allow_uncalibrated=allow_uncalibrated) for fle in file_list]
+        # images = [image.Image(fle, allow_uncalibrated=allow_uncalibrated) for fle in file_list]
+        def creat_img(fle,allow_uncalibrated):
+            return image.Image(fle, allow_uncalibrated=allow_uncalibrated)
+
+        with ThreadPoolExecutor(max_workers=5) as executor:
+            images = list(executor.map(creat_img, file_list, [allow_uncalibrated] * len(file_list)))
+
         return cls(images)
 
     def __get_reference_index(self):

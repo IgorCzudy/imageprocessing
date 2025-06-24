@@ -293,6 +293,7 @@ class Image(object):
 
         # get image dimensions
         image_raw = np.copy(self.raw()).T
+        # image_raw = self.raw().T
 
         #  get radiometric calibration factors
         _, a2, a3 = self.radiometric_cal[0], self.radiometric_cal[1], self.radiometric_cal[2]
